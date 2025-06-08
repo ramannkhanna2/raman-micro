@@ -28,12 +28,11 @@ jobs:
         run: |
           pytest tests/
 
-      - name: Run Bandit (SAST Security Scan)
-        run: |
-          bandit -r app -f json -o bandit-report.json || true
+      - name: Run Bandit Security Scan
+        run: bandit -r app -f json -o bandit-report.json || true
 
-      - name: Generate SBOM (CycloneDX)
-        run: cyclonedx-py -o sbom.json
+      - name: Generate SBOM
+        run: cyclonedx-py requirements -i requirements.txt -o sbom.json
 
   docker-build-push:
     needs: lint-test-scan
