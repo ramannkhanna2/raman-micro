@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raman-micro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: raman-micro
+  template:
+    metadata:
+      labels:
+        app: raman-micro
+    spec:
+      containers:
+        - name: raman-micro
+          image: your-docker-image
+          ports:
+            - containerPort: 8080
