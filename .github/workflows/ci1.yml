@@ -42,7 +42,7 @@ jobs:
             bandit-report.json
             sbom.json
 
-  docker-build-push:
+  docker-build-push-trivyscan:
     needs: lint-test-scan
     runs-on: ubuntu-latest
     steps:
@@ -76,10 +76,11 @@ jobs:
       - name: Run Trivy Scan on Docker Image
         run: |
           trivy image --format json --output trivy-report.json ${{ secrets.DOCKERHUB_USERNAME }}/raman-micro:latest
+          cat trivy-report.json
         continue-on-error: true      
 
   dast-scan:
-    needs: docker-build-push
+    needs: docker-build-push-trviyscan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
