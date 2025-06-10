@@ -43,7 +43,7 @@ jobs:
     needs: sast-checks
     runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.meta.outputs.tags }}
+      image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -57,23 +57,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract Metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/raman-micro
-
-      - name: Build & Push Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+      - name: Define Image Tag
+        id: build
+        run: |
+          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/raman-micro:latest
+          echo "image_tag=$IMAGE" >> $GITHUB_OUTPUT
+          docker build -t $IMAGE .
+          docker push $IMAGE
 
   trivy-scan:
     needs: docker-build
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     steps:
+      - name: Debug Image Tag
+        run: echo "Image tag is ${{ needs.docker-build.outputs.image_tag }}"
+
       - name: Install Trivy
         uses: aquasecurity/trivy-action@master
         with:
@@ -83,12 +81,12 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
 
-      - name: Upload Trivy Report
+      - name: Run Trivy JSON Scan
         run: |
           trivy image --format json -o trivy-report.json \
           ${{ needs.docker-build.outputs.image_tag }} || true
 
-      - name: Upload Trivy JSON Report
+      - name: Upload Trivy Report
         uses: actions/upload-artifact@v4
         with:
           name: trivy-report
@@ -102,7 +100,7 @@ jobs:
         run: |
           docker run -d -p 5000:5000 --name raman-micro \
           ${{ needs.docker-build.outputs.image_tag }}
-          sleep 10  # wait for app to start
+          sleep 10
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
@@ -116,3 +114,4 @@ jobs:
         with:
           name: zap-report
           path: zap-report.html
+
