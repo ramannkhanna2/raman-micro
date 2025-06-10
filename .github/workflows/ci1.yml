@@ -64,6 +64,19 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/raman-micro:latest
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+
+      - name: Run Trivy Scan on Docker Image
+        run: |
+          trivy image --format json --output trivy-report.json ${{ secrets.DOCKERHUB_USERNAME }}/raman-micro:latest
+        continue-on-error: true      
 
   dast-scan:
     needs: docker-build-push
