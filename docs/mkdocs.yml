@@ -1,0 +1,6 @@
+site_name: raman-micro
+nav:
+  - Home: index.md
+plugins:
+  - techdocs-core
+

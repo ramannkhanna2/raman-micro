@@ -1,15 +1,27 @@
-# Raman Micro Service
+# Raman Microservice
 
-## Features
-- Flask web server
-- Prometheus metrics
-- Helm deployment
-- GitHub Actions CI/CD
+Welcome to the **raman-micro** documentation.
 
-## Metrics Endpoint
-```bash
-curl http://localhost:8080/metrics
-```
+## 🔧 Features
 
-## Owner
-Team: Team A | Contact: @team-a
+- Flask-based microservice
+- CI/CD via GitHub Actions
+- SAST, DAST, SBOM integrated
+- Dockerized and Helm-compatible
+- Exposes Prometheus metrics
+
+## 🚀 Deployment
+
+Deployed via GitHub Actions workflow.
+
+## 🧪 Observability
+
+Integrated with:
+- Prometheus for metrics
+- Loki/ELK for logs
+- Grafana dashboards
+
+## 👤 Owner
+
+Maintained by **Raman Khanna**.
+
