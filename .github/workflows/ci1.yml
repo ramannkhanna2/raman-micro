@@ -80,7 +80,7 @@ jobs:
         continue-on-error: true      
 
   dast-scan:
-    needs: docker-build-push-trviyscan
+    needs: docker-build-push-trivyscan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
