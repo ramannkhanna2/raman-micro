@@ -80,28 +80,13 @@ jobs:
     needs: docker-build
     runs-on: ubuntu-latest
     steps:
-      - name: Debug Image Tag
-        run: echo "Image tag is ${{ needs.docker-build.outputs.image_tag }}"
+    - name: Upload Trivy Report
+      run: trivy image --format json -o trivy-report.json ramann123/raman-micro:latest || true
 
-      - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: image
-          image-ref: ${{ needs.docker-build.outputs.image_tag }}
-          format: table
-          exit-code: 0
-          ignore-unfixed: true
-
-      - name: Run Trivy JSON Report
-        run: |
-          trivy image --format json -o trivy-report.json \
-          ${{ needs.docker-build.outputs.image_tag }} || true
-
-      - name: Upload Trivy Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-report
-          path: trivy-report.json
+    - uses: actions/upload-artifact@v4
+      with:
+        name: trivy-report
+        path: trivy-report.json
 
   dast-check:
     needs: trivy-scan
