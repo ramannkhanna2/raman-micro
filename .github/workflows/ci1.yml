@@ -98,12 +98,6 @@ jobs:
           target: 'http://localhost:5000'
         continue-on-error: true
 
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-report
-          path: owasp-zap-report.html
-
       - name: Stop and Remove Container
         if: always()
         run: |
