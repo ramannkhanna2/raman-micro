@@ -9,7 +9,7 @@ metadata:
     github.com/project-slug: ramannkhanna2/raman-micro
     prometheus.io/scrape: "true"
     prometheus.io/port: "8080"
-    github.com/workflows: ./github/workflows/ci1.yml  # Your workflow filename
+    github.com/workflows: ci1.yml  # Your workflow filename
 spec:
   type: service
   lifecycle: production
