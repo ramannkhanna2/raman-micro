@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: raman-micro
+  description: Python Flask microservice with metrics
+  tags: [python, flask, prometheus]
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: ramannkhanna2/raman-micro
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+spec:
+  type: service
+  lifecycle: production
+  owner: team-a
+  system: demo-system
