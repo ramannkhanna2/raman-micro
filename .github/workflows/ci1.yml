@@ -1,4 +1,4 @@
-name: CI Pipeline with SAST + DAST + Trivy
+name: CI Pipeline with SAST/DAST
 
 on:
   push:
@@ -39,20 +39,11 @@ jobs:
       - name: Generate SBOM
         run: cyclonedx-py requirements -i requirements.txt -o sbom.json
 
-      - name: Upload SAST Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: sast-reports
-          path: |
-            bandit-report.json
-            semgrep-report.json
-            sbom.json
-
   docker-build:
     needs: sast-checks
     runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.set-tag.outputs.image_tag }}
+      image_tag: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -66,37 +57,28 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set Image Tag
-        id: set-tag
-        run: |
-          echo "image_tag=${{ secrets.DOCKERHUB_USERNAME }}/raman-micro:latest" >> $GITHUB_OUTPUT
+      - name: Extract Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/raman-micro
 
       - name: Build & Push Docker Image
-        run: |
-          docker build -t ${{ steps.set-tag.outputs.image_tag }} .
-          docker push ${{ steps.set-tag.outputs.image_tag }}
-
-  trivy-scan:
-    needs: docker-build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Upload Trivy Report
-      run: trivy image --format json -o trivy-report.json ramann123/raman-micro:latest || true
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: trivy-report
-        path: trivy-report.json
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
   dast-check:
-    needs: trivy-scan
+    needs: docker-build
     runs-on: ubuntu-latest
     steps:
       - name: Start Container for DAST
         run: |
           docker run -d -p 5000:5000 --name raman-micro \
           ${{ needs.docker-build.outputs.image_tag }}
-          sleep 10  # give app time to start
+          sleep 10  # wait for app to start
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
