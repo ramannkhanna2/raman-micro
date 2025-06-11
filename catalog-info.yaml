@@ -11,7 +11,7 @@ metadata:
   annotations:
     github.com/project-slug: ramannkhanna2/raman-micro
     backstage.io/techdocs-ref: dir:.
-    grafana/dashboard-url: http://54.233.49.51:3001/d/1f416562-37ea-4ef1-8df3-d6d1381b7f89/count?orgId=1&from=now-6h&to=now&timezone=browser
+    grafana/dashboard-url: http://54.233.49.51:3001/d/1f416562-37ea-4ef1-8df3-d6d1381b7f89/count
     grafana/dashboard-selector: tag=raman-micro
     grafana/tag-selector: raman-micro
 
