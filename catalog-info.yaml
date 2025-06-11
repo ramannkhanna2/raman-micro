@@ -2,14 +2,20 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: raman-micro
-  description: A Flask microservice with CI/CD and observability
+  description: Flask microservice demo with Prometheus & Grafana
+  tags:
+    - flask
+    - python
+    - prometheus
+    - demo
   annotations:
     github.com/project-slug: ramannkhanna2/raman-micro
     backstage.io/techdocs-ref: dir:.
-    prometheus.io/scrape: "true"
-    loki.io/logs: "true"
+    grafana/dashboard-url: http://54.233.49.51:3001/d/1f416562-37ea-4ef1-8df3-d6d1381b7f89/count?orgId=1&from=now-6h&to=now&timezone=browser
 spec:
   type: service
-  lifecycle: experimental
-  owner: raman
+  lifecycle: production
+  owner: dev-team
+  system: raman-platform
+
 
