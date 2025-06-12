@@ -5,7 +5,7 @@ metadata:
   labels:
     app: raman-micro
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: raman-micro
