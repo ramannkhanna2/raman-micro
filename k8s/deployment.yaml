@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: raman-micro
-          image: docker.io/raman/raman-micro:latest
+          image: docker.io/ramann123/raman-micro:latest
           ports:
             - containerPort: 5000
           resources:
